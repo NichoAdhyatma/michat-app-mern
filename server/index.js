@@ -24,3 +24,7 @@ mongoose
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server running at PORT ${process.env.PORT}`);
 });
+
+app.get('/', (req, res) => {
+  res.send('hello world')
+})
