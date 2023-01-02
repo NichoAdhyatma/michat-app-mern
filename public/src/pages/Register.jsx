@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -21,8 +21,13 @@ function Register() {
     autoClose: 5000,
     pauseOnHover: true,
     draggable: true,
-    theme: "dark",
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("chat-app-user")) {
+      navigate("/");
+    }
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -67,7 +72,6 @@ function Register() {
       toast.error("email is required.", toastOption);
       return false;
     }
-    toast.success("register success.", toastOption);
     return true;
   };
 
@@ -81,7 +85,6 @@ function Register() {
         <form onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="app_logo" />
-            <h1>Michat</h1>
           </div>
           <input
             type="text"
@@ -127,42 +130,32 @@ const FormContainer = styled.div`
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  background-color: #131324;
+  background-color: #ffff;
   .brand {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    img {
-      height: 5rem;
-    }
-    h1 {
-      color: white;
-      text-transform: uppercase;
-    }
   }
   form {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: #00000076;
+    background-color: rgba(113, 132, 121, 0.15);
     border-radius: 2rem;
     padding: 3rem 5rem;
     input {
       width: 24rem;
       background-color: transparent;
-      border: 0.1rem solid #4e0eff;
+      border: 0.1rem solid #54B435;
       padding: 1rem;
       border-radius: 0.4rem;
-      color: white;
+
       font-size: 1rem;
       &:focus {
-        border: 0.1rem solid #997af0;
-        outline: none;
+        outline: 0.15rem solid #379237;
       }
     }
     button {
-      background-color: #997af0;
+      background-color: #379237;
       color: white;
       padding 1rem;
       border:none;
@@ -172,14 +165,14 @@ const FormContainer = styled.div`
       transition: 0.5s ease-in-out;
       &:hover{
         cursor: pointer;
-        background-color: #4e0eff;
+        background-color: #54B435;
       }
     }
     span {
-      color: white;
+
       text-align: center;
       a {
-        color: #4e0eff;
+        color: #54B435;
         font-weight: bold;
         text-decoration: none;
         margin-left: 0.2rem;
