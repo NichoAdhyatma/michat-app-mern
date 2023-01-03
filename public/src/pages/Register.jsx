@@ -162,7 +162,7 @@ const FormContainer = styled.div`
       font-weight: bold;
       border-radius: 0.4rem;
       text-transform: uppercase;
-      transition: 0.5s ease-in-out;
+      transition: 0.2s ease-in-out;
       &:hover{
         cursor: pointer;
         background-color: #54B435;
