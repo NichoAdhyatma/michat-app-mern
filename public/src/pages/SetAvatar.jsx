@@ -35,18 +35,20 @@ export default function SetAvatar() {
       toast.error("Please select an avatar.", toastOption);
     } else {
       const user = await JSON.parse(localStorage.getItem("chat-app-user"));
-      const data = await axios.post(`${setAvatarRoute}/${user._id}`, {
-        image: avatars[selectedAvatars],
-      });
-
-      if (data.data.isSet) {
-        user.isAvatarImageSet = true;
-        user.avatarImage = data.Image;
-        localStorage.setItem("chat-app-user", JSON.stringify(user));
-        navigate("/");
-      } else {
-        toast.error("Error setting avatar, please try again.", toastOption);
-      }
+      axios
+        .post(`${setAvatarRoute}/${user._id}`, {
+          image: avatars[selectedAvatars],
+        })
+        .then( ({data}) => {
+          if (data.isSet) {
+            user.isAvatarImageSet = true;
+            user.avatarImage = data.image;
+            localStorage.setItem("chat-app-user", JSON.stringify(user));
+            navigate("/");
+          } else {
+            toast.info("please double click select button", toastOption)
+          }
+        });
     }
   };
 

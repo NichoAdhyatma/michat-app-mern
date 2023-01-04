@@ -22,11 +22,12 @@ function Chat() {
   }, [navigate]);
 
   useEffect(() => {
-    const getAllUsers = async () => {
+    const getAllUsers = () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
-          const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-          setContacts(data.data);
+          axios.get(`${allUsersRoute}/${currentUser._id}`).then(({data}) => {
+            setContacts(data);
+          });
         } else {
           navigate("/setAvatar");
         }
