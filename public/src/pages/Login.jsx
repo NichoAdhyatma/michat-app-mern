@@ -77,9 +77,10 @@ function Login() {
             name="password"
             onChange={(event) => handleChange(event)}
           />
+          <span className="forgot-pw"><Link>Forgot password ? </Link></span>
           <button type="submit">Login</button>
           <span>
-            Don't have an account yet ? <Link to="/register"></Link>
+            Don't have an account yet ? <Link to="/register">Register</Link>
           </span>
         </form>
       </FormContainer>
@@ -114,11 +115,14 @@ const FormContainer = styled.div`
       border: 0.1rem solid #54B435;
       padding: 1rem;
       border-radius: 0.4rem;
-
       font-size: 1rem;
       &:focus {
         outline: 0.15rem solid #379237;
       }
+    }
+
+    .forgot-pw {
+      text-align: left;
     }
     button {
       background-color: #379237;
@@ -135,7 +139,6 @@ const FormContainer = styled.div`
       }
     }
     span {
-
       text-align: center;
       a {
         color: #54B435;

@@ -35,8 +35,6 @@ export default function SetAvatar() {
         image: avatars[selectedAvatars],
       });
 
-      console.log(data.data);
-
       if (data.data.isSet) {
         user.isAvatarImageSet = true;
         user.avatarImage = data.Image;
