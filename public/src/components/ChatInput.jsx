@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ChatInput = () => {
+const ChatInput = ({handleSendMsg}) => {
   return (
     <div>
       
