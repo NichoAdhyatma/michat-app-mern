@@ -8,7 +8,10 @@ import Contact from "../components/Contact";
 function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [currentChat, setCurrentChat] = useState(undefined);
   const navigate = useNavigate();
+
+  const handleChatChange = (chat) => {};
 
   useEffect(() => {
     const authCheck = async () => {
@@ -25,7 +28,7 @@ function Chat() {
     const getAllUsers = () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
-          axios.get(`${allUsersRoute}/${currentUser._id}`).then(({data}) => {
+          axios.get(`${allUsersRoute}/${currentUser._id}`).then(({ data }) => {
             setContacts(data);
           });
         } else {
@@ -60,7 +63,7 @@ const Container = styled.div`
     width: 85vw;
     background-color: rgba(113, 132, 121, 0.15);
     display: grid;
-    grid-templates-columns: 25% 75%;
+    grid-template-columns: 25% 75%;
     @media screen and (min-width: 720px) and (max-width: 1080px) {
       grid-templates-columns: 35% 65%;
     }

@@ -53,7 +53,7 @@ const Contact = ({ contacts, currentUser }) => {
               />
             </div>
             <div className="username">
-              <h1>{currentUserName}</h1>
+              <h2>{currentUserName}</h2>
             </div>
           </div>
         </Container>
@@ -66,19 +66,73 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
+
   .brand {
     display: flex;
     justify-content: center;
-    align-items: start;
-    gap: 1rem;
+    align-items: center;
+    img {
+      height: 4rem;
+    }
   }
 
   .contacts {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     overflow: auto;
     gap: 0.8rem;
+    &::-webkit-scrollbar {
+      width: 0.4rem;
+      &-thumb{
+        background-color: #5454;
+        border-radius: 0.2rem;
+      }
+    }
+    .contact {
+      background-color: #5252;
+      min-height: 5rem;
+      width: 90%;
+      cursor: pointer;
+      border-radius: 0.2rem;
+      padding: 0.8rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      transition: 0.2s ease-in-out;
+      .avatar {
+        img {
+          height: 3rem;
+        }
+      }
+    }
+  }
+
+  .selected {
+    background-color: #379237;
+    color: #ffff;
+  }
+
+  .current-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    .avatar {
+      img {
+        height: 4rem;
+        max-inline-size: 100%;
+      }
+    }
+    @media screen and (min-width: 720px) and (max-width: 1080px) {
+      gap: 0.5rem;
+      .username {
+        h2 {
+          font-size: 1rem;
+        }
+      }
+    }
   }
 `;
 
