@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
+import Messages from './Messages'
 
 const ChatContainer = ({ currentChat }) => {
   const handleSendMsg = async (msg) => {};
@@ -21,8 +22,7 @@ const ChatContainer = ({ currentChat }) => {
               </div>
             </div>
           </div>
-
-          <div className="chat-messages"></div>
+          <Messages />
           <ChatInput handleSendMsg={handleSendMsg} />
         </Container>
       )}
@@ -31,12 +31,13 @@ const ChatContainer = ({ currentChat }) => {
 };
 
 const Container = styled.div`
-  padding: 1rem;
+  display: grid;
+  grid-template-rows: 15% 75% 10%;
   .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.2rem;
+    padding: 0 1rem;
     .user-details {
       display: flex;
       align-items: center;
