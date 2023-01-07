@@ -1,10 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
-import Messages from './Messages'
+import Messages from "./Messages";
+import { getAllMessageRoute, MessageRoute } from "../utils/APIRoutes";
+import axios from "axios";
 
-const ChatContainer = ({ currentChat }) => {
-  const handleSendMsg = async (msg) => {};
+const ChatContainer = ({ currentChat, currentUser }) => {
+  const [messages, setMessages] = useState([]);
+
+  const handleSendMsg = async (msg) => {
+    axios.post(MessageRoute, {
+      from: currentUser._id,
+      to: currentChat._id,
+      message: msg,
+    });
+  };
+
+  useEffect(() => {
+    const getAllMsg = async () => {
+      if (currentChat && currentUser) {
+        const respones = await axios.post(getAllMessageRoute, {
+          from: currentUser._id,
+          to: currentChat._id,
+        });
+        setMessages(respones.data);
+      }
+    };
+    getAllMsg();
+  }, [currentChat, currentUser]);
+
   return (
     <>
       {currentChat && (
@@ -22,7 +46,22 @@ const ChatContainer = ({ currentChat }) => {
               </div>
             </div>
           </div>
-          <Messages />
+          <div className="messages">
+            {messages.map((message, key) => {
+              return (
+                <div
+                  className={`message ${
+                    message.fromSelf ? "sended" : "recieved"
+                  }`}
+                  key={key}
+                >
+                  <div className="content">
+                    <p>{message.message}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <ChatInput handleSendMsg={handleSendMsg} />
         </Container>
       )}
@@ -33,11 +72,15 @@ const ChatContainer = ({ currentChat }) => {
 const Container = styled.div`
   display: grid;
   grid-template-rows: 15% 75% 10%;
+  gap: 0.1rem;
+  overflow: hidden;
+
   .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
+
     .user-details {
       display: flex;
       align-items: center;
@@ -46,6 +89,40 @@ const Container = styled.div`
         img {
           height: 3rem;
         }
+      }
+    }
+  }
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: auto;
+    padding 2rem 3rem;
+
+    .message {
+      display: flex;
+      align-items: center;
+      .content {
+        max-width: 40%;
+        overflow-wrap : break-word;
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: 1rem;
+        color: #ffff;
+      }
+    }
+    .sended {
+      justify-content: flex-end;
+      .content {
+        background-color: #379237;
+      }
+    }
+
+    .recieved {
+      justify-content: flex-start;
+      .content {
+        background-color: #54B435;
       }
     }
   }
