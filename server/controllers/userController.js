@@ -105,6 +105,16 @@ module.exports.logOut = (req, res, next) => {
   }
 };
 
-module.exports.checkUsername = () => {
-  
-}
+module.exports.checkUsername = async (req, res, next) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (user) {
+      return res.json({ status: false, msg: "Username is unavailable." });
+    } else {
+      return res.json({ status: true, msg: "Username is available" });
+    }
+  } catch (err) {
+    next(err);
+  }
+};

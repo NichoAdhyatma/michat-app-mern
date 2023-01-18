@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from "../assets/logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { loginRoute } from "../utils/APIRoutes";
-import SocialLoginButtons from "../components/SocialLoginButtons";
+import { checkUsernameRoute, registerRoute } from "../utils/APIRoutes";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "../utils/firebaseConfig";
+import { debounce } from "../utils/Debounce";
 
 export default function SetUsername() {
-  onAuthStateChanged(firebaseAuth, (userData) => {
-    if (!userData) {
-      navigate("/login");
-    } else {
-      setEmail(
-        userData.user.email
-          ? userData.user.email
-          : userData.user.providerData[0].email
-      );
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuth, (userData) => {
+      if (!userData) {
+        navigate("/login");
+      } else {
+        handleEmail(userData);
+      }
+    });
+  }, []);
   const navigate = useNavigate();
   const [values, setValues] = useState("");
   const [label, setLabel] = useState("");
@@ -35,6 +32,10 @@ export default function SetUsername() {
     draggable: true,
   };
 
+  const handleEmail = (userData) => {
+    setEmail(userData.email ? userData.email : userData.providerData[0].email);
+  };
+
   useEffect(() => {
     if (localStorage.getItem("chat-app-user")) {
       navigate("/");
@@ -44,10 +45,10 @@ export default function SetUsername() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (handleValidation()) {
-      const { password, email } = values;
-      const { data } = await axios.post(loginRoute, {
+      const { data } = await axios.post(registerRoute, {
+        username: values,
         email,
-        password,
+        password: (Math.random() + 1).toString(20).substring(1),
       });
       if (data.status === false) {
         toast.error(data.msg, toastOption);
@@ -58,7 +59,6 @@ export default function SetUsername() {
       }
     }
   };
-  console.log(values);
 
   const handleValidation = () => {
     if (values.length < 3) {
@@ -68,9 +68,20 @@ export default function SetUsername() {
     return true;
   };
 
-  const handleChange = (event) => {
-    setValues(event.target.value);
+  const checkUsername = async (username) => {
+    if (username.length > 3) {
+      const { data } = await axios.post(checkUsernameRoute, {
+        username,
+      });
+      setUsernameStatus(data.status);
+      setLabel(data.msg);
+      setValues(username);
+    } else {
+      setLabel("Enter a username at least 4 character");
+    }
   };
+
+  const handleChange = debounce((name) => checkUsername(name), 300);
 
   return (
     <>
@@ -83,9 +94,27 @@ export default function SetUsername() {
                 type="text"
                 placeholder="Username"
                 name="username"
-                onChange={(event) => handleChange(event)}
+                autoComplete="off"
+                className={`${
+                  usernameStatus
+                    ? "border-success"
+                    : usernameStatus !== undefined
+                    ? "border-danger"
+                    : ""
+                }`}
+                onChange={(event) => handleChange(event.target.value)}
               />
-              <label></label>
+              <label
+                className={`${
+                  usernameStatus
+                    ? "success"
+                    : usernameStatus !== undefined
+                    ? "danger"
+                    : ""
+                }`}
+              >
+                {label}
+              </label>
             </div>
             <button type="submit" className="btn">
               Set Username
@@ -108,6 +137,21 @@ const FormContainer = styled.div`
   align-items: center;
   background-color: #ffff;
 
+  .row {
+    label {
+      display: block;
+      margin: 10px 0 0 5px;
+      height: 0.5rem
+      transition: 0.3s ease-in-out;
+    }
+    label.success {
+      color: green;
+    }
+    label.danger {
+      color: red;
+    }
+  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -122,13 +166,23 @@ const FormContainer = styled.div`
       border-radius: 0.4rem;
       font-size: 1rem;
       &:focus {
-        outline: 0.15rem solid #379237;
+        outline: none;
       }
     }
 
+    .border-success {
+      border: 0.15rem solid green;
+    }
+
+    .border-danger {
+      border: 0.15rem solid red;
+    }
+
+    
     .forgot-pw {
       text-align: left;
     }
+    
     .btn {
       background-color: #379237;
       color: white;
