@@ -7,13 +7,26 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { loginRoute } from "../utils/APIRoutes";
 import SocialLoginButtons from "../components/SocialLoginButtons";
+import { onAuthStateChanged } from "firebase/auth";
+import { firebaseAuth } from "../utils/firebaseConfig";
 
-function Login() {
-  const navigate = useNavigate();
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
+export default function SetUsername() {
+  onAuthStateChanged(firebaseAuth, (userData) => {
+    if (!userData) {
+      navigate("/login");
+    } else {
+      setEmail(
+        userData.user.email
+          ? userData.user.email
+          : userData.user.providerData[0].email
+      );
+    }
   });
+  const navigate = useNavigate();
+  const [values, setValues] = useState("");
+  const [label, setLabel] = useState("");
+  const [email, setEmail] = useState(undefined);
+  const [usernameStatus, setUsernameStatus] = useState(undefined);
 
   const toastOption = {
     position: "bottom-right",
@@ -45,48 +58,40 @@ function Login() {
       }
     }
   };
+  console.log(values);
 
   const handleValidation = () => {
-    const { password, email } = values;
-    if (email === "" || password === "") {
-      toast.error("email and password is required.", toastOption);
+    if (values.length < 3) {
+      toast.error("username at least 3 characters.", toastOption);
       return false;
     }
     return true;
   };
 
   const handleChange = (event) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
+    setValues(event.target.value);
   };
 
   return (
     <>
       <FormContainer>
-        <form onSubmit={(event) => handleSubmit(event)}  className="bg-white">
-          <div className="brand">
-            <img src={Logo} alt="app_logo" />
-          </div>
-          <input
-            type="text"
-            placeholder="email"
-            name="email"
-            onChange={(event) => handleChange(event)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={(event) => handleChange(event)}
-          />
-          <span className="forgot-pw">
-            <Link>Forgot password ? </Link>
-          </span>
-          <button type="submit" className="btn">Login</button>
-          <SocialLoginButtons />
-          <span>
-            Don't have an account yet ? <Link to="/register">Register</Link>
-          </span>
-        </form>
+        {email && (
+          <form onSubmit={(event) => handleSubmit(event)} className="bg-white">
+            <span>Check username availability</span>
+            <div className="row">
+              <input
+                type="text"
+                placeholder="Username"
+                name="username"
+                onChange={(event) => handleChange(event)}
+              />
+              <label></label>
+            </div>
+            <button type="submit" className="btn">
+              Set Username
+            </button>
+          </form>
+        )}
       </FormContainer>
       <ToastContainer />
     </>
@@ -102,10 +107,7 @@ const FormContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #ffff;
-  .brand {
-    display: flex;
-    justify-content: center;
-  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -141,16 +143,11 @@ const FormContainer = styled.div`
         background-color: #54B435;
       }
     }
+
     span {
       text-align: center;
-      a {
-        color: #54B435;
-        font-weight: bold;
-        text-decoration: none;
-        margin-left: 0.2rem;
-      }
+      font-weight: bold;
+      text-transform: uppercase;
     }
   }
 `;
-
-export default Login;

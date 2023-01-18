@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
+import SocialLoginButtons from "../components/SocialLoginButtons";
 
 function Register() {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ function Register() {
   return (
     <>
       <FormContainer>
-        <form onSubmit={(event) => handleSubmit(event)}>
+        <form onSubmit={(event) => handleSubmit(event)} className="bg-white">
           <div className="brand">
             <img src={Logo} alt="app_logo" />
           </div>
@@ -111,7 +112,8 @@ function Register() {
             onChange={(event) => handleChange(event)}
           />
 
-          <button type="submit">Register</button>
+          <button type="submit" className="btn">Register</button>
+          <SocialLoginButtons/>
           <span>
             Aleready have an account ? <Link to="/login">Login</Link>
           </span>
@@ -139,7 +141,6 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: rgba(113, 132, 121, 0.15);
     border-radius: 2rem;
     padding: 3rem 5rem;
     input {
@@ -154,7 +155,7 @@ const FormContainer = styled.div`
         outline: 0.15rem solid #379237;
       }
     }
-    button {
+    .btn {
       background-color: #379237;
       color: white;
       padding 1rem;

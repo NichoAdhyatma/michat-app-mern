@@ -91,7 +91,6 @@ const Container = styled.div`
 
   .contacts {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
     overflow: auto;

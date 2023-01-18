@@ -77,3 +77,34 @@ module.exports.getAllUsers = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.firebaseLogin = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (email) {
+      const user = await User.findOne({ email });
+      if (user) {
+        delete user.password;
+        return res.json({ status: true, user });
+      } else {
+        return res.json({ status: false, msg: "Email not found!" });
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.logOut = (req, res, next) => {
+  try {
+    if (!req.params.id) return res.json({ msg: "User id is required " });
+    onlineUsers.delete(req.params.id);
+    return res.status(200).send();
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.checkUsername = () => {
+  
+}
